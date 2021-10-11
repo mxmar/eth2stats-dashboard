@@ -1,9 +1,12 @@
 import { observable } from "mobx";
+import {Store} from "app/store/Store";
 
 export class Stats {
     @observable currentSlot: number;
     @observable currentEpoch: number;
     @observable timeSinceSlotStart = this.formatTime(0);
+
+    main: Store;
 
     networkGenesisTime: number;
     interval: number;
@@ -25,15 +28,15 @@ export class Stats {
     calculateCurrentState() {
         let now = Math.floor((new Date()).getTime() / 100) / 10;
 
-        this.currentSlot = Math.floor((now - this.networkGenesisTime) / 12);
+        this.currentSlot = Math.floor((now - this.networkGenesisTime) / this.main.getNetworkConfig()!.SECONDS_PER_SLOT);
         this.currentEpoch = Math.floor(this.currentSlot / 32);
         this.timeSinceSlotStart = this.formatTime(Math.round(
-            ((now - this.networkGenesisTime) - this.currentSlot * 12) * 10) / 10);
+            ((now - this.networkGenesisTime) - this.currentSlot * this.main.getNetworkConfig()!.SECONDS_PER_SLOT) * 10) / 10);
     }
 
     formatTime(t: any) {
         if (t < 0) { t = 0; }
-        if (t > 12) { t = 12; }
+        if (t > this.main.getNetworkConfig()!.SECONDS_PER_SLOT) { t = this.main.getNetworkConfig()!.SECONDS_PER_SLOT; }
 
         t += "";
 

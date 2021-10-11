@@ -6,6 +6,7 @@ export interface INetworkConfig {
     "HTTP_API": string;
     "WS_API": string;
     "SERVER_ADDR": string;
+    "SECONDS_PER_SLOT": number;
 }
 
 interface IAppConfigData {
